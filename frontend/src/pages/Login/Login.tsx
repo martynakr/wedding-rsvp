@@ -15,7 +15,7 @@ const Login = () => {
         <div className="bg-lotus-bg bg-cover bg-center h-screen w-screen opacity-80 flex flex-col flex-col items-center justify-center">
             <Paper>
                 <h1 className="text-4xl text-green-ink font-parisienne">
-                    Login
+                    Martyna's & Pierre's Wedding
                 </h1>
                 <p>Please enter the password from your invitation</p>
                 <Form
