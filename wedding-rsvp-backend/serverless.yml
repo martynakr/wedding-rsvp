@@ -1,0 +1,26 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: martynakr
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: wedding-rsvp-backend
+
+provider:
+    name: aws
+    runtime: nodejs20.x
+    region: ap-southeast-2
+
+functions:
+    auth:
+        handler: src/functions/auth/auth.handler
+        events:
+            - httpApi:
+                  path: /auth
+                  method: post
+    invite:
+        handler: src/functions/getInvite/getInvite.handler
+        events:
+            - httpApi:
+                  path: /invites
+                  method: get
+
+plugins:
+    - serverless-offline
