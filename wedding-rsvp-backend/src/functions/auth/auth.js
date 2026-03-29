@@ -61,6 +61,17 @@ export const handler = async (event) => {
             result.Item.password,
         );
 
+        if (!isPasswordValid) {
+            return {
+                statusCode: 401,
+
+                body: JSON.stringify({
+                    message:
+                        "Uh oh, looks like you are not invited, the details are incorrect",
+                }),
+            };
+        }
+
         const token = jwt.sign({ id: inviteCode }, secret, { expiresIn: "2h" });
 
         const cookie = serialize("jwt", token, {

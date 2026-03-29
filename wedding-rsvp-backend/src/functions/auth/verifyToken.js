@@ -1,41 +1,65 @@
 import { parse } from "cookie";
+import jwt from "jsonwebtoken";
+import {
+    SecretsManagerClient,
+    GetSecretValueCommand,
+} from "@aws-sdk/client-secrets-manager";
 
-export const verifyToken = async (event) => {
-    const cookieHeader = event.headers?.cookie;
+function generatePolicy(principalId, effect, resource, context = {}) {
+    return {
+        principalId,
+        policyDocument: {
+            Version: "2012-10-17",
+            Statement: [
+                {
+                    Action: "execute-api:Invoke",
+                    Effect: effect,
+                    Resource: resource,
+                },
+            ],
+        },
+        context,
+    };
+}
 
-    if (!cookieHeader) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: "Unauthorized" }),
-        };
-    }
+const clientForSecret = new SecretsManagerClient({
+    region: "ap-southeast-2",
+});
 
-    const cookies = parse(cookieHeader);
-    const token = cookies.jwt;
+let cachedSecret;
 
-    if (!token) {
-        throw { statusCode: 401, message: "Unauthorized" };
-    }
-
+export const handler = async (event) => {
     try {
+        const cookieHeader = event.headers?.cookie;
+
+        if (!cookieHeader) {
+            return generatePolicy("anonymous", "Deny", event.routeArn);
+        }
+
+        const cookies = parse(cookieHeader);
+        const token = cookies.jwt;
+
+        if (!token) {
+            return generatePolicy("anonymous", "Deny", event.routeArn);
+        }
+
         const secret_name = "JWT_SECRET";
 
-        const clientForSecret = new SecretsManagerClient({
-            region: "ap-southeast-2",
+        if (!cachedSecret) {
+            const response = await clientForSecret.send(
+                new GetSecretValueCommand({
+                    SecretId: secret_name,
+                }),
+            );
+
+            cachedSecret = response.SecretString;
+        }
+
+        const decoded = jwt.verify(token, cachedSecret);
+        return generatePolicy(decoded.id, "Allow", event.routeArn, {
+            inviteCode: decoded.id,
         });
-
-        let response;
-
-        response = await clientForSecret.send(
-            new GetSecretValueCommand({
-                SecretId: secret_name,
-            }),
-        );
-
-        const secret = response.SecretString;
-        const decoded = jwt.verify(token, secret);
-        return decoded;
     } catch (e) {
-        throw { statusCode: 401, message: "Unauthorized" };
+        return generatePolicy("anonymous", "Deny", event.routeArn);
     }
 };
