@@ -76,17 +76,18 @@ export const handler = async (event) => {
 
         const cookie = serialize("jwt", token, {
             httpOnly: true,
-            secure: false,
+            secure: true,
             path: "/",
-            sameSite: "Strict",
+            sameSite: "None",
             maxAge: 60 * 60,
         });
 
         return {
             statusCode: 200,
             headers: {
-                "Set-Cookie": cookie,
-                "Content-Type": "application/json",
+                "Set-Cookie": cookie, // ✅ correct field for REST API
+                "Access-Control-Allow-Origin": "http://localhost:5173", // ✅ no wildcard
+                "Access-Control-Allow-Credentials": "true", // ✅ required for cookies
             },
             body: JSON.stringify({ success: true }),
         };

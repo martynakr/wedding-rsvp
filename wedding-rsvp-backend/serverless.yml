@@ -15,11 +15,9 @@ provider:
                     - $request.header.Cookie
 
 functions:
-    # Lambda Authorizer
     authorizer:
         handler: src/functions/auth/verifyToken.handler
 
-    # Public route
     auth:
         handler: src/functions/auth/auth.handler
         events:
@@ -27,12 +25,20 @@ functions:
                   path: /auth
                   method: post
 
-    # Protected route
     invite:
         handler: src/functions/getInvite/getInvite.handler
         events:
             - httpApi:
                   path: /invites
                   method: get
+                  authorizer:
+                      name: customAuthorizer
+
+    updateInvite:
+        handler: src/functions/updateInvite/updateInvite.handler
+        events:
+            - httpApi:
+                  path: /rsvp
+                  method: post
                   authorizer:
                       name: customAuthorizer
