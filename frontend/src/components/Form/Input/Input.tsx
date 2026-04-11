@@ -1,10 +1,13 @@
+import type { InputHTMLAttributes } from "react";
 import {
     type UseFormRegister,
     type FieldValues,
     type Path,
 } from "react-hook-form";
 
-interface InputProps<T extends FieldValues> {
+interface InputProps<
+    T extends FieldValues,
+> extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     name: Path<T>;
     error?: string;
@@ -19,16 +22,20 @@ const Input = <T extends FieldValues>({
     ...props
 }: InputProps<T>) => {
     return (
-        <div className="flex flex-col gap-1">
-            {label && <label htmlFor={name}>{label}</label>}
+        <div className="flex flex-col gap-1 items-start">
+            {label && (
+                <label htmlFor={name} className="font-bold text-green-ink">
+                    {label}
+                </label>
+            )}
             <input
                 id={name}
                 type="text"
                 {...register(name)}
-                className="border rounded-sm p-1 "
+                className="border rounded-sm p-1 w-full"
                 {...props}
             />
-            {error && <small>{error}</small>}
+            {error && <small className="text-red-500">{error}</small>}
         </div>
     );
 };

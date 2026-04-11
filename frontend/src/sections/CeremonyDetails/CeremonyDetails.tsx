@@ -6,7 +6,7 @@ const details = [
         event: "Arrive at the ceremony lawn",
     },
     {
-        time: "4.20pm",
+        time: "4.15pm",
         event: "Ceremony starts",
     },
     {
@@ -39,7 +39,10 @@ const details = [
 
 const CeremonyDetails = () => {
     return (
-        <section className="bg-lotus-bg bg-cover bg-center opacity-80 w-full flex justify-center p-16">
+        <section
+            className="bg-lotus-bg bg-cover bg-center opacity-80 w-full flex justify-center p-16 lg:px-62"
+            id="celebration-timeline"
+        >
             <Paper>
                 <h3 className="text-4xl text-green-ink font-parisienne">
                     Celebration Timeline

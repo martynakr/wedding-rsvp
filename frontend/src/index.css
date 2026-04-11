@@ -1,11 +1,42 @@
 @config "../tailwind.config.js";
 @import "tailwindcss";
+@import "react-toastify/dist/ReactToastify.css";
 
 body {
     margin: 0;
     display: flex;
     place-items: center;
     font-family: "Cormorant Garamond", serif;
+}
+
+#root {
+    width: 100vw;
+}
+
+.Toastify__toast--success {
+    background: #f3eed6 !important;
+    color: #2e3f2f !important;
+    border: 2px solid #e1c76a !important;
+}
+
+.Toastify__toast--error {
+    background: #dc2626 !important;
+    color: #f3eed6 !important;
+    border: 2px solid #c7a64a !important;
+}
+
+.Toastify__toast {
+    font-family: "Cormorant Garamond", serif !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(46, 63, 47, 0.3) !important;
+}
+
+.Toastify__progress-bar {
+    background: #e1c76a !important;
+}
+
+.Toastify__close-button {
+    color: #f3eed6 !important;
 }
 
 @media (max-width: 767px) {

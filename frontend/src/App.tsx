@@ -1,20 +1,19 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import Home from "./pages/Home";
-import Nav from "./components/Nav/Nav";
+import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import RSVP from "./pages/RSVP/RSVP";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
     return (
         <>
-            <BrowserRouter>
-                {/* <Nav /> */}
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route element={<ProtectedRoute />}>
                     <Route path="/rsvp" element={<RSVP />} />
-                </Routes>
-            </BrowserRouter>
+                    <Route path="/" element={<Home />} />
+                </Route>
+            </Routes>
         </>
     );
 }

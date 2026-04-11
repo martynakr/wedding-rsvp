@@ -1,13 +1,19 @@
 import Paper from "../Paper/Paper";
-//   bg-gradient-to-b from-lotus-cream via-lotus-pollen via-mist-gold via-green-sage to-green-ink
-const Header = () => {
+interface HeaderProps {
+    headingTxt: string;
+    desc: string;
+}
+const Header = ({ headingTxt, desc }: HeaderProps) => {
     return (
-        <header className="bg-[url('/wedding_hero.jpeg')] bg-cover bg-center h-screen w-screen flex flex-col items-center justify-end p-6">
+        <header
+            className="bg-[url('/wedding_hero.jpeg')] bg-cover bg-center h-screen w-screen flex flex-col items-center justify-end p-6 lg:px-64"
+            id="header"
+        >
             <Paper>
                 <h1 className="text-4xl text-green-ink font-parisienne text-center">
-                    Pierre & Martyna are getting married
+                    {headingTxt}
                 </h1>
-                <p>Lucky you, you're invited!</p>
+                <p>{desc}</p>
             </Paper>
         </header>
     );

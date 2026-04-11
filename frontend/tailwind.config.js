@@ -23,6 +23,8 @@ export default {
                 mist: {
                     olive: "#7C8B63",
                     gold: "#C7A64A",
+                    golddark: "#7A5F28",
+                    brown: "#5A3E2B",
                 },
             },
         },
