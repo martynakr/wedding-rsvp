@@ -5,6 +5,7 @@ interface AccommodationCardProps {
     description: string;
     link: string;
     imgSrc: string;
+    btnTxt: string;
 }
 
 const AccommodationCard = ({
@@ -12,6 +13,7 @@ const AccommodationCard = ({
     description,
     link,
     imgSrc,
+    btnTxt,
 }: AccommodationCardProps) => {
     return (
         <div className="flex flex-col lg:flex-row gap-6 text-left md:mx-24">
@@ -27,7 +29,7 @@ const AccommodationCard = ({
                     variant="Secondary"
                     onClick={() => window.open(link, "_blank")}
                 >
-                    Book here
+                    {btnTxt}
                 </Button>
             </div>
         </div>

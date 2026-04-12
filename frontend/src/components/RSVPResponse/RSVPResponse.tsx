@@ -1,16 +1,47 @@
 import Paper from "../Paper/Paper";
+import { translation } from "../../helpers/translation";
 
 interface RSVPResponseProps {
     firstName: string;
     lastName: string;
     isAttending?: boolean;
     dietaryRequirements?: string;
+    language?: "PL" | "EN";
 }
+
+const responseText = {
+    noResponse: {
+        EN: "You haven't responded yet",
+        PL: "Nie odpowiedziałeś jeszcze",
+    },
+    attendingLabel: {
+        EN: "Will you be attending?",
+        PL: "Czy weźmiesz udział na naszym ślubie?",
+    },
+    dietaryLabel: {
+        EN: "Dietary Requirements:",
+        PL: "Restrykcje żywieniowe:",
+    },
+    none: {
+        EN: "None",
+        PL: "Brak",
+    },
+    yes: {
+        EN: "YES",
+        PL: "TAK",
+    },
+    no: {
+        EN: "NO",
+        PL: "NIE",
+    },
+};
+
 const RSVPResponse = ({
     firstName,
     lastName,
     isAttending,
     dietaryRequirements,
+    language = "EN",
 }: RSVPResponseProps) => {
     return (
         <div className="text-black">
@@ -19,27 +50,40 @@ const RSVPResponse = ({
                     {firstName} {lastName}
                 </h3>
                 {(isAttending === null || isAttending === undefined) && (
-                    <p>You haven't responded yet</p>
+                    <p>{translation(language, "noResponse", responseText)}</p>
                 )}
 
                 {(isAttending === true || isAttending === false) && (
                     <>
                         <p>
                             <span className="text-bold text-green-ink">
-                                Will you be attending?{" "}
+                                {translation(
+                                    language,
+                                    "attendingLabel",
+                                    responseText,
+                                )}{" "}
                             </span>
-                            {isAttending === true ? "YES" : "NO"}
+                            {isAttending === true
+                                ? translation(language, "yes", responseText)
+                                : translation(language, "no", responseText)}
                         </p>
-                        <p>
-                            <span className="text-bold text-green-ink">
-                                Dietary Requirements:
-                            </span>
-                            {dietaryRequirements === null ||
-                            dietaryRequirements === undefined ||
-                            dietaryRequirements === ""
-                                ? " None"
-                                : ` ${dietaryRequirements}`}
-                        </p>
+                        {isAttending === true && (
+                            <p>
+                                <span className="text-bold text-green-ink">
+                                    {translation(
+                                        language,
+                                        "dietaryLabel",
+                                        responseText,
+                                    )}
+                                </span>
+
+                                {dietaryRequirements === null ||
+                                dietaryRequirements === undefined ||
+                                dietaryRequirements === ""
+                                    ? ` ${translation(language, "none", responseText)}`
+                                    : ` ${dietaryRequirements}`}
+                            </p>
+                        )}
                     </>
                 )}
             </Paper>

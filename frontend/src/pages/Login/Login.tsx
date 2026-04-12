@@ -24,22 +24,25 @@ const Login = () => {
         <div className="bg-lotus-bg bg-cover bg-center h-screen w-screen opacity-80 flex flex-col flex-col items-center justify-center md:px-24 lg:px-72">
             <Paper>
                 <h1 className="text-4xl text-green-ink font-parisienne">
-                    Martyna & Pierre's Wedding
+                    The wedding of Martyna and Pierre
                 </h1>
-                <p>Please enter the details from your invitation</p>
+                <p>
+                    Please enter the details from your invitation / Wpisz dane z
+                    zaproszenia
+                </p>
                 <Form onSubmit={handleFormSubmit} methods={methods}>
                     <Input
                         name="inviteCode"
                         register={methods.register}
                         label="Invite Code: "
-                        placeholder="Enter invite code"
+                        placeholder="Enter invite code / Kod zaproszenia"
                         error={methods.formState.errors.inviteCode?.message}
                     />
                     <Input
                         name="password"
                         register={methods.register}
                         label="Password: "
-                        placeholder="Enter password"
+                        placeholder="Enter password / Hasło"
                         error={methods.formState.errors.password?.message}
                     />
                     <Button variant="Primary" type="submit">

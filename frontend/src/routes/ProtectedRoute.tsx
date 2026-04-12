@@ -11,9 +11,9 @@ const ProtectedRoute = () => {
     if (isError || !currentInvite) return <Navigate to="/login" replace />;
     return (
         <>
-            <Nav />
+            <Nav language={currentInvite?.language} />
             <Outlet />
-            <Footer />
+            <Footer language={currentInvite?.language} />
         </>
     );
 };

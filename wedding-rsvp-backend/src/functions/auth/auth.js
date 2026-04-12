@@ -84,10 +84,13 @@ export const handler = async (event) => {
 
         return {
             statusCode: 200,
+            // headers: {
+            //     "Set-Cookie": `jwt=${token}; HttpOnly; Secure; SameSite=None; Path=/`,
+            // },
             headers: {
-                "Set-Cookie": cookie, // ✅ correct field for REST API
-                "Access-Control-Allow-Origin": "http://localhost:5173", // ✅ no wildcard
-                "Access-Control-Allow-Credentials": "true", // ✅ required for cookies
+                "Set-Cookie": cookie,
+                "Access-Control-Allow-Origin": "https://pierreandmartyna.com",
+                "Access-Control-Allow-Credentials": "true",
             },
             body: JSON.stringify({ success: true }),
         };

@@ -21,30 +21,44 @@ const hotelData = [
             "If you prefer to stay somewhere else, this is a hotel  located a 2 min drive/27 min walk away from the wedding resort. It has beach access and good ratings.",
     },
 ];
-interface SectionProps {
-    currentUser?: InviteDetails;
+
+interface HotelData {
+    imgSrc: string;
+    description: string;
+    hotelName: string;
+    link: string;
+    btnTxt: string;
+}
+interface AccommodationProps {
+    hotelData: HotelData[];
+    headingTxt: string;
+    subHeading1: string;
+    desc1: string;
+    subHeading2: string;
+    btnTxt: string;
 }
 
-const Accommodation = ({ currentUser }: SectionProps) => {
+const Accommodation = ({
+    hotelData,
+    headingTxt,
+    subHeading1,
+    desc1,
+    subHeading2,
+
+    btnTxt,
+}: AccommodationProps) => {
     return (
         <section
             className="bg-lotus-pollen p-16 text-center"
             id="accommodation-getting-there"
         >
             <h3 className="text-4xl text-green-ink font-parisienne mb-12">
-                {currentUser?.language === "EN"
-                    ? "Accommodation and getting there"
-                    : "Noclegi i jak dotrzeć na miejsce"}
+                {headingTxt}
             </h3>
             <div className="flex flex-col gap-10">
                 <div className="flex flex-col gap-4 items-center">
-                    <h4 className="text-2xl text-green-ink">
-                        Closest Airport: Phuket International Airport (HKT)
-                    </h4>
-                    <p>
-                        Khao Lak is about one hour drive from the airport. You
-                        can book a private driver using the button below.
-                    </p>
+                    <h4 className="text-2xl text-green-ink">{subHeading1}</h4>
+                    <p>{desc1}</p>
                     <Button
                         variant="Secondary"
                         onClick={() =>
@@ -54,12 +68,12 @@ const Accommodation = ({ currentUser }: SectionProps) => {
                             )
                         }
                     >
-                        Book airport transfers
+                        {btnTxt}
                     </Button>
                 </div>
                 <div>
                     <h4 className="text-2xl text-green-ink p-4">
-                        Accommodation
+                        {subHeading2}
                     </h4>
                     <div className="flex flex-col gap-6">
                         {hotelData.map((h) => {
@@ -70,6 +84,7 @@ const Accommodation = ({ currentUser }: SectionProps) => {
                                     imgSrc={h.imgSrc}
                                     description={h.description}
                                     link={h.link}
+                                    btnTxt={h.btnTxt}
                                 />
                             );
                         })}

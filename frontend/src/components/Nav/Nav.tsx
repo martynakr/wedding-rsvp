@@ -2,7 +2,11 @@ import { useState } from "react";
 import { NavLink } from "react-router";
 import { NavHashLink } from "react-router-hash-link";
 
-const Nav = () => {
+interface NavProps {
+    language?: "PL" | "EN";
+}
+
+const Nav = ({ language = "EN" }: NavProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleMenu = () => setIsOpen(!isOpen);
@@ -33,7 +37,7 @@ const Nav = () => {
                         to="/#header"
                         className="text-base hover:opacity-70 transition-opacity text-green-moss"
                     >
-                        Home
+                        {language === "EN" ? "Home" : "Strona Główna"}
                     </NavHashLink>
 
                     <NavHashLink
@@ -41,20 +45,24 @@ const Nav = () => {
                         to="/#celebration-timeline"
                         className="text-base hover:opacity-70 transition-opacity text-green-moss"
                     >
-                        Celebration Timeline
+                        {language === "EN"
+                            ? "Celebration Timeline"
+                            : "Plan Uroczystości"}
                     </NavHashLink>
                     <NavHashLink
                         smooth
                         to="/#accommodation-getting-there"
                         className="text-base hover:opacity-70 transition-opacity text-green-moss"
                     >
-                        Getting There & Accommodation
+                        {language === "EN"
+                            ? "Getting There & Accommodation"
+                            : "Jak dojechać i nocelgi"}
                     </NavHashLink>
                     <NavLink
                         to="/rsvp"
                         className="text-base hover:opacity-70 transition-opacity text-green-moss"
                     >
-                        RSVP
+                        {language === "EN" ? "RSVP" : "Potwierdź przybycie"}
                     </NavLink>
                 </div>
             </div>
@@ -67,7 +75,7 @@ const Nav = () => {
                         onClick={closeMenu}
                         className="text-sm hover:opacity-70 transition-opacity text-green-moss py-2"
                     >
-                        Home
+                        {language === "EN" ? "Home" : "Strona Główna"}
                     </NavHashLink>
 
                     <NavHashLink
@@ -76,7 +84,9 @@ const Nav = () => {
                         onClick={closeMenu}
                         className="text-sm hover:opacity-70 transition-opacity text-green-moss py-2"
                     >
-                        Celebration Timeline
+                        {language === "EN"
+                            ? "Celebration Timeline"
+                            : "Plan Uroczystości"}
                     </NavHashLink>
                     <NavHashLink
                         smooth
@@ -84,14 +94,16 @@ const Nav = () => {
                         onClick={closeMenu}
                         className="text-sm hover:opacity-70 transition-opacity text-green-moss py-2"
                     >
-                        Getting There & Accommodation
+                        {language === "EN"
+                            ? "Getting There & Accommodation"
+                            : "Jak dojechać i nocelgi"}
                     </NavHashLink>
                     <NavLink
                         to="/rsvp"
                         onClick={closeMenu}
                         className="text-sm hover:opacity-70 transition-opacity text-green-moss py-2"
                     >
-                        RSVP
+                        {language === "EN" ? "RSVP" : "Potwierdź przybycie"}
                     </NavLink>
                 </div>
             )}
