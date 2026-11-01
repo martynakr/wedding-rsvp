@@ -11,10 +11,11 @@ import RSVPResponse from "../../components/RSVPResponse/RSVPResponse";
 import type { RSVPPayload } from "../../services/rsvp";
 import { useRSVP } from "../../hooks/useRSVP";
 import { translation } from "../../helpers/translation";
+import { useEffect, useState } from "react";
 
 const rsvpText = {
     heading: {
-        PL: "Potwierź przybycie",
+        PL: "Potwierdź przybycie",
         EN: "RSVP",
     },
     desc: {
@@ -53,10 +54,44 @@ const rsvpText = {
 
 const RSVP = () => {
     const { data: currentInvite } = useAuth();
-    const { mutate: rsvpMutation } = useRSVP(currentInvite?.language);
+    const { mutate: rsvpMutation, isError, isSuccess, isPending } = useRSVP();
     const methods = useForm<RSVPForm>({ resolver: zodResolver(schema) });
     const fullName = methods.watch("fullName");
     const isAttending = methods.watch("isAttending");
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalTitle, setModalTitle] = useState("");
+    const [modalMessage, setModalMessage] = useState("");
+
+    useEffect(() => {
+        if (isSuccess) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            setModalTitle(
+                currentInvite?.language === "EN" ? "RSVP Sent" : "RSVP wysłane",
+            );
+            setModalMessage(
+                currentInvite?.language === "EN"
+                    ? "Your RSVP has been submitted successfully. Thank you!"
+                    : "Twoja odpowiedź została pomyślnie wysłana. Dziękujemy!",
+            );
+            setModalOpen(true);
+        }
+    }, [isSuccess, currentInvite?.language]);
+
+    useEffect(() => {
+        if (isError) {
+            setModalTitle(
+                currentInvite?.language === "EN"
+                    ? "Submission Failed"
+                    : "Niepowodzenie przesyłania",
+            );
+            setModalMessage(
+                currentInvite?.language === "EN"
+                    ? "Unable to submit your RSVP. Please try again."
+                    : "Nie udało się wysłać odpowiedzi. Spróbuj ponownie.",
+            );
+            setModalOpen(true);
+        }
+    }, [isError, currentInvite?.language]);
 
     const handleFormSubmit = (values: RSVPForm) => {
         const { fullName, ...rest } = values;
@@ -70,14 +105,49 @@ const RSVP = () => {
             lastName: fullName.split(" ")[1],
             inviteCode: currentInvite?.inviteCode || "",
         };
-        rsvpMutation(rsvpData, {
-            onSuccess: () => {
-                methods.reset();
-            },
-        });
+
+        if (fullName.includes("Plus One")) {
+            rsvpData.lastName = "Plus One";
+        }
+
+        console.log(rsvpData, "RSVP data");
+        rsvpMutation(rsvpData);
     };
     return (
         <main className=" bg-green-pond md:px-25 px-6 pb-12 flex flex-col gap-10 min-h-screen">
+            {isPending && (
+                <div className="fixed inset-0  flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-8 flex flex-col items-center gap-4">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-pond"></div>
+                        <p className="text-gray-700 font-medium">
+                            {currentInvite?.language === "EN"
+                                ? "Submitting..."
+                                : "Przesyłanie odpowiedzi..."}
+                        </p>
+                    </div>
+                </div>
+            )}
+            {modalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
+                    <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden">
+                        <div className="p-8 text-center">
+                            <h2 className="text-2xl font-semibold mb-4">
+                                {modalTitle}
+                            </h2>
+                            <p className="text-gray-700 mb-8">{modalMessage}</p>
+                            <Button
+                                variant="Secondary"
+                                type="button"
+                                onClick={() => setModalOpen(false)}
+                            >
+                                {currentInvite?.language === "EN"
+                                    ? "Close"
+                                    : "Zamknij"}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="text-lotus-cream text-center ">
                 <h1 className="text-4xl font-parisienne text-center text-lotus-pollen pb-8 pt-18">
                     {translation(currentInvite?.language, "heading", rsvpText)}
@@ -178,11 +248,9 @@ const RSVP = () => {
                     )}
 
                     <Button variant="Primary" type="submit">
-                        {translation(
-                            currentInvite?.language,
-                            "formBtn",
-                            rsvpText,
-                        )}
+                        {currentInvite?.language === "PL"
+                            ? "Prześlij odpowiedź"
+                            : "Submit RSVP"}
                     </Button>
                 </Form>
             </Paper>

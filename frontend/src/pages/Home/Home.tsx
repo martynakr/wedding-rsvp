@@ -49,14 +49,6 @@ const homeText = {
                 time: "22:00",
                 event: "Zakończenie przyjęcia",
             },
-            {
-                time: "22:00",
-                event: "Afterparty w Beach Clubie",
-            },
-            {
-                time: "00:00",
-                event: "Zakończenie afterparty",
-            },
         ],
         EN: [
             { time: "4.00pm", event: "Arrive at the ceremony lawn" },
@@ -65,8 +57,6 @@ const homeText = {
             { time: "5.00pm", event: "Group photos" },
             { time: "6.30pm", event: "Reception starts" },
             { time: "10.00pm", event: "Reception ends" },
-            { time: "10.00pm", event: "Afterparty at Beach Club" },
-            { time: "12.00am", event: "Afterparty ends" },
         ],
     },
     accommodationHeading: {
@@ -91,7 +81,7 @@ const homeText = {
             {
                 imgSrc: leMeridien,
                 hotelName: "Le Meridien Khao Lak Resort & SPA",
-                link: "https://travefy.com/website/martynapierre-ywtar32qduxv2q2",
+                link: "https://travefy.com/website/martynapierre-ywtar32qcuhh3q2",
                 description:
                     "This is the hotel the wedding is taking place at. You can book with our wedding planner to receive a discounted rate. To do so, click the button below, it will take you to a landing page with a link to a booking form.",
                 btnTxt: "Book here",
@@ -110,7 +100,7 @@ const homeText = {
             {
                 imgSrc: leMeridien,
                 hotelName: "Le Meridien Khao Lak Resort & SPA",
-                link: "https://travefy.com/website/martynapierre-ywtar32qduxv2q2",
+                link: "https://travefy.com/website/martynapierre-ywtar32qcuhh3q2",
                 description:
                     "To jest hotel, w którym odbędzie się wesele. Możesz dokonać rezerwacji przez naszą organizatorkę ślubu, aby otrzymać zniżkową cenę. W tym celu kliknij przycisk poniżej - zostaniesz przeniesiony na stronę z linkiem do formularza rezerwacji.",
                 btnTxt: "Zarezerwuj tutaj",
@@ -126,7 +116,7 @@ const homeText = {
         ],
     },
     accommodationDesc1: {
-        EN: "Khao Lak is about one hour drive from the airport. You can book a private driver using the button below.",
+        EN: "Khao Lak is about one hour drive from the airport. You can book a private driver using the button below, or by emailing our wedding planner at info@thaitheknotweddings.com.au",
         PL: "Khao Lak znajduje się około godzinę jazdy od lotniska. Możesz zarezerwować prywatnego kierowcę, korzystając z przycisku poniżej.",
     },
 };

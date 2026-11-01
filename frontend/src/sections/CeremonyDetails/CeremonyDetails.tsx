@@ -12,7 +12,7 @@ interface CeremonyDetailsProps {
 const CeremonyDetails = ({ details, headingTxt }: CeremonyDetailsProps) => {
     return (
         <section
-            className="bg-lotus-bg bg-cover bg-center opacity-80 w-full flex justify-center p-16 lg:px-62"
+            className="bg-lotus-bg bg-cover bg-center opacity-80 w-full flex justify-center p-12 lg:px-62"
             id="celebration-timeline"
         >
             <Paper>

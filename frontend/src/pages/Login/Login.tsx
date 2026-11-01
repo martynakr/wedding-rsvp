@@ -34,14 +34,14 @@ const Login = () => {
                     <Input
                         name="inviteCode"
                         register={methods.register}
-                        label="Invite Code: "
+                        label="Invite Code / Kod zaproszenia: "
                         placeholder="Enter invite code / Kod zaproszenia"
                         error={methods.formState.errors.inviteCode?.message}
                     />
                     <Input
                         name="password"
                         register={methods.register}
-                        label="Password: "
+                        label="Password / Hasło: "
                         placeholder="Enter password / Hasło"
                         error={methods.formState.errors.password?.message}
                     />
