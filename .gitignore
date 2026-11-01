@@ -2,3 +2,4 @@ guests.json
 
 wedding-rsvp-backend/.env
 wedding-rsvp-backend/node_modules
+**/.env
