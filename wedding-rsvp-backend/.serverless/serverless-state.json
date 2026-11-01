@@ -1,0 +1,779 @@
+{
+  "service": {
+    "service": "wedding-rsvp-backend",
+    "serviceObject": {
+      "name": "wedding-rsvp-backend"
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs20.x",
+      "region": "ap-southeast-2",
+      "httpApi": {
+        "cors": true,
+        "authorizers": {
+          "customAuthorizer": {
+            "type": "request",
+            "functionName": "authorizer",
+            "identitySource": "$request.header.Cookie"
+          }
+        }
+      },
+      "stage": "dev",
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "AuthorizerLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/wedding-rsvp-backend-dev-authorizer"
+            }
+          },
+          "AuthLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/wedding-rsvp-backend-dev-auth"
+            }
+          },
+          "InviteLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/wedding-rsvp-backend-dev-invite"
+            }
+          },
+          "UpdateInviteLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/wedding-rsvp-backend-dev-updateInvite"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "wedding-rsvp-backend",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/wedding-rsvp-backend-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/wedding-rsvp-backend-dev*:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "wedding-rsvp-backend",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "AuthorizerLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-ap-southeast-2-81500ba0-3eb4",
+                "S3Key": "serverless/wedding-rsvp-backend/dev/1775911487124-2026-04-11T12:44:47.124Z/wedding-rsvp-backend.zip"
+              },
+              "Handler": "src/functions/auth/verifyToken.handler",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "wedding-rsvp-backend-dev-authorizer",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "AuthorizerLogGroup"
+            ]
+          },
+          "AuthLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-ap-southeast-2-81500ba0-3eb4",
+                "S3Key": "serverless/wedding-rsvp-backend/dev/1775911487124-2026-04-11T12:44:47.124Z/wedding-rsvp-backend.zip"
+              },
+              "Handler": "src/functions/auth/auth.handler",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "wedding-rsvp-backend-dev-auth",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "AuthLogGroup"
+            ]
+          },
+          "InviteLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-ap-southeast-2-81500ba0-3eb4",
+                "S3Key": "serverless/wedding-rsvp-backend/dev/1775911487124-2026-04-11T12:44:47.124Z/wedding-rsvp-backend.zip"
+              },
+              "Handler": "src/functions/getInvite/getInvite.handler",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "wedding-rsvp-backend-dev-invite",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "InviteLogGroup"
+            ]
+          },
+          "UpdateInviteLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-ap-southeast-2-81500ba0-3eb4",
+                "S3Key": "serverless/wedding-rsvp-backend/dev/1775911487124-2026-04-11T12:44:47.124Z/wedding-rsvp-backend.zip"
+              },
+              "Handler": "src/functions/updateInvite/updateInvite.handler",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "wedding-rsvp-backend-dev-updateInvite",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateInviteLogGroup"
+            ]
+          },
+          "AuthorizerLambdaVersiontzzKpC5hHJVHtNP3ELiJ6fFt6HKU7meHdwwj3xUvK4k": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "AuthorizerLambdaFunction"
+              },
+              "CodeSha256": "wSbwVbXELkYEH61yNejKZaC3Hk8i4PV+8IfXg26thh0="
+            }
+          },
+          "AuthLambdaVersionncr6vEabbLLTYQq4C776DEO1o4c0OBb0HWex1poxqdQ": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "AuthLambdaFunction"
+              },
+              "CodeSha256": "wSbwVbXELkYEH61yNejKZaC3Hk8i4PV+8IfXg26thh0="
+            }
+          },
+          "InviteLambdaVersionGJIogveMGFZn3kBaKwySBU2rHdN3AZ0w8V5kjrdc": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "InviteLambdaFunction"
+              },
+              "CodeSha256": "wSbwVbXELkYEH61yNejKZaC3Hk8i4PV+8IfXg26thh0="
+            }
+          },
+          "UpdateInviteLambdaVersionrhyFy62CLH7QUCCS68nGi5L3CnsZmK1zL8vBz6owM": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateInviteLambdaFunction"
+              },
+              "CodeSha256": "wSbwVbXELkYEH61yNejKZaC3Hk8i4PV+8IfXg26thh0="
+            }
+          },
+          "HttpApi": {
+            "Type": "AWS::ApiGatewayV2::Api",
+            "Properties": {
+              "Name": "dev-wedding-rsvp-backend",
+              "ProtocolType": "HTTP",
+              "CorsConfiguration": {
+                "AllowHeaders": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "X-Amzn-Trace-Id"
+                ],
+                "AllowMethods": [
+                  "OPTIONS",
+                  "POST",
+                  "GET"
+                ],
+                "AllowOrigins": [
+                  "*"
+                ]
+              }
+            }
+          },
+          "HttpApiStage": {
+            "Type": "AWS::ApiGatewayV2::Stage",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "StageName": "$default",
+              "AutoDeploy": true,
+              "DefaultRouteSettings": {
+                "DetailedMetricsEnabled": false
+              }
+            }
+          },
+          "CustomAuthorizerLambdaAuthorizerPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "AuthorizerLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiAuthorizerCustomAuthorizer": {
+            "Type": "AWS::ApiGatewayV2::Authorizer",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "Name": "customAuthorizer",
+              "IdentitySource": [
+                "$request.header.Cookie"
+              ],
+              "AuthorizerType": "REQUEST",
+              "AuthorizerPayloadFormatVersion": "2.0",
+              "AuthorizerUri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"CustomAuthorizerLambdaAuthorizerPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            }
+          },
+          "AuthLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "AuthLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationAuth": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"AuthLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostAuth": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /auth",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationAuth"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationAuth"
+          },
+          "InviteLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "InviteLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationInvite": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"InviteLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRouteGetInvites": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "GET /invites",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationInvite"
+                    }
+                  ]
+                ]
+              },
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Ref": "HttpApiAuthorizerCustomAuthorizer"
+              }
+            },
+            "DependsOn": "HttpApiIntegrationInvite"
+          },
+          "UpdateInviteLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateInviteLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationUpdateInvite": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"UpdateInviteLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostRsvp": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /rsvp",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationUpdateInvite"
+                    }
+                  ]
+                ]
+              },
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Ref": "HttpApiAuthorizerCustomAuthorizer"
+              }
+            },
+            "DependsOn": "HttpApiIntegrationUpdateInvite"
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-ap-southeast-2-81500ba0-3eb4",
+            "Export": {
+              "Name": "sls-wedding-rsvp-backend-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "AuthorizerLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "AuthorizerLambdaVersiontzzKpC5hHJVHtNP3ELiJ6fFt6HKU7meHdwwj3xUvK4k"
+            },
+            "Export": {
+              "Name": "sls-wedding-rsvp-backend-dev-AuthorizerLambdaFunctionQualifiedArn"
+            }
+          },
+          "AuthLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "AuthLambdaVersionncr6vEabbLLTYQq4C776DEO1o4c0OBb0HWex1poxqdQ"
+            },
+            "Export": {
+              "Name": "sls-wedding-rsvp-backend-dev-AuthLambdaFunctionQualifiedArn"
+            }
+          },
+          "InviteLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "InviteLambdaVersionGJIogveMGFZn3kBaKwySBU2rHdN3AZ0w8V5kjrdc"
+            },
+            "Export": {
+              "Name": "sls-wedding-rsvp-backend-dev-InviteLambdaFunctionQualifiedArn"
+            }
+          },
+          "UpdateInviteLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateInviteLambdaVersionrhyFy62CLH7QUCCS68nGi5L3CnsZmK1zL8vBz6owM"
+            },
+            "Export": {
+              "Name": "sls-wedding-rsvp-backend-dev-UpdateInviteLambdaFunctionQualifiedArn"
+            }
+          },
+          "HttpApiId": {
+            "Description": "Id of the HTTP API",
+            "Value": {
+              "Ref": "HttpApi"
+            },
+            "Export": {
+              "Name": "sls-wedding-rsvp-backend-dev-HttpApiId"
+            }
+          },
+          "HttpApiUrl": {
+            "Description": "URL of the HTTP API",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  }
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-wedding-rsvp-backend-dev-HttpApiUrl"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "pluginsData": {},
+    "functions": {
+      "authorizer": {
+        "handler": "src/functions/auth/verifyToken.handler",
+        "events": [],
+        "name": "wedding-rsvp-backend-dev-authorizer",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs20.x",
+        "vpc": {},
+        "versionLogicalId": "AuthorizerLambdaVersiontzzKpC5hHJVHtNP3ELiJ6fFt6HKU7meHdwwj3xUvK4k"
+      },
+      "auth": {
+        "handler": "src/functions/auth/auth.handler",
+        "events": [
+          {
+            "httpApi": {
+              "path": "/auth",
+              "method": "post"
+            },
+            "resolvedMethod": "POST",
+            "resolvedPath": "/auth"
+          }
+        ],
+        "name": "wedding-rsvp-backend-dev-auth",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs20.x",
+        "vpc": {},
+        "versionLogicalId": "AuthLambdaVersionncr6vEabbLLTYQq4C776DEO1o4c0OBb0HWex1poxqdQ"
+      },
+      "invite": {
+        "handler": "src/functions/getInvite/getInvite.handler",
+        "events": [
+          {
+            "httpApi": {
+              "path": "/invites",
+              "method": "get",
+              "authorizer": {
+                "name": "customAuthorizer"
+              }
+            },
+            "resolvedMethod": "GET",
+            "resolvedPath": "/invites"
+          }
+        ],
+        "name": "wedding-rsvp-backend-dev-invite",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs20.x",
+        "vpc": {},
+        "versionLogicalId": "InviteLambdaVersionGJIogveMGFZn3kBaKwySBU2rHdN3AZ0w8V5kjrdc"
+      },
+      "updateInvite": {
+        "handler": "src/functions/updateInvite/updateInvite.handler",
+        "events": [
+          {
+            "httpApi": {
+              "path": "/rsvp",
+              "method": "post",
+              "authorizer": {
+                "name": "customAuthorizer"
+              }
+            },
+            "resolvedMethod": "POST",
+            "resolvedPath": "/rsvp"
+          }
+        ],
+        "name": "wedding-rsvp-backend-dev-updateInvite",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs20.x",
+        "vpc": {},
+        "versionLogicalId": "UpdateInviteLambdaVersionrhyFy62CLH7QUCCS68nGi5L3CnsZmK1zL8vBz6owM"
+      }
+    },
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless",
+    "initialServerlessConfig": {
+      "org": "martynakr",
+      "service": "wedding-rsvp-backend",
+      "provider": {
+        "$ref": "$[\"service\"][\"provider\"]"
+      },
+      "functions": {
+        "$ref": "$[\"service\"][\"functions\"]"
+      }
+    },
+    "appId": null,
+    "org": "martynakr",
+    "orgId": null,
+    "layers": {},
+    "artifact": "/Users/martyna/Desktop/personal/wedding/wedding-rsvp-backend/.serverless/wedding-rsvp-backend.zip"
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/wedding-rsvp-backend/dev/1775911487124-2026-04-11T12:44:47.124Z",
+    "artifact": "wedding-rsvp-backend.zip"
+  }
+}
